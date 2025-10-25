@@ -1,10 +1,7 @@
-FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04
+FROM buildpack-deps:25.04
 
-ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="3.28.3"
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install build-essential cmake cppcheck valgrind clang lldb llvm gdb git \
+    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-COPY ./reinstall-cmake.sh /tmp/
-
-RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
-    chmod +x /tmp/reinstall-cmake.sh && /tmp/reinstall-cmake.sh ${REINSTALL_CMAKE_VERSION_FROM_SOURCE}; \
-    fi \
-    && rm -f /tmp/reinstall-cmake.sh
+USER ubuntu
